@@ -1,9 +1,9 @@
-import java.util.*;
-import java.io.*;
-import java.math.*;
-import java.util.jar.JarEntry;
+package classicEasy;
 
-class Solution {
+import java.util.Scanner;
+
+//https://www.codingame.com/training/easy/lumen
+public class Lumen {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
