@@ -1,6 +1,8 @@
-import java.util.*;
+package classicEasy;
 
-class Solution {
+import java.util.Scanner;
+//https://www.codingame.com/training/easy/a-childs-play
+public class AChildsPlay {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
