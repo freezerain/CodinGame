@@ -9,9 +9,7 @@ public class AChildsPlay {
         int col = in.nextInt();
         int row = in.nextInt();
         long n = in.nextLong();
-        if (in.hasNextLine()) {//End line
-            in.nextLine();
-        }
+        if (in.hasNextLine()) {in.nextLine(); }//End line
         char[][] mapArr = new char[row][col];
         int robotRow = 0; //This will be robot position coordinates
         int robotCol = 0;
@@ -24,12 +22,9 @@ public class AChildsPlay {
                 if (c == 'O') { //if we found robot - update current coordinates
                     robotRow = i;
                     robotCol = j;
-                } else if (c == '#') obstacleCount++;
-            }
-        }
+                } else if (c == '#') obstacleCount++; } }
         in.close();// C l o s e
-        int loopRow = 0;//Coordinates of loop start
-        int loopCol = 0;
+        int loopRow = 0; int loopCol = 0;//Coordinates of loop start
         int loopThreshold = row * col - obstacleCount; //If robot moved > then possible moves, then robot guaranteed in the loop
         int direction = 0;// 0-up, 1-right, 2-down, 3-left. Robot turns clockwise
         for(long move = 1; move <= n; move++){

@@ -1,6 +1,7 @@
 package classicEasy;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //https://www.codingame.com/training/easy/graffiti-on-the-fence
 //TODO This is not solved yet
@@ -13,7 +14,7 @@ public class GraffitiOnTheFence {
         ArrayList<Integer> unpainted = new ArrayList<>();
         ArrayList<Range> rangeList = new ArrayList<>();
         outerLoop:
-        for (int i = 0; i < N; i++) {
+        for(int i = 0; i < N; i++){
             rangeList.add(new Range(in.nextInt(), in.nextInt()));
         }
         rangeList.sort(new Comparator<Range>() {
@@ -24,33 +25,58 @@ public class GraffitiOnTheFence {
         });
         Iterator<Range> it1 = rangeList.iterator();
         Iterator<Range> it2;
-        while(it1.hasNext()){
+        while (it1.hasNext()) {
             Range r1 = it1.next();
-            it2=it1;
-            if(it2.hasNext()) {
+            it2 = it1;
+            if (it2.hasNext()) {
                 Range r2 = it2.next();
-                if(r1.isCollide(r2)){
+                if (r1.isCollide(r2)) {
                     rangeList.set(rangeList.indexOf(r1), r1.merge(r2));
                     it2.remove();
                     it1 = rangeList.iterator();
                 }
             } else break;
         }
-        if(rangeList.size()>0 && rangeList.get(0).equals(new Range(0, L)))
-            System.out.println("All painted");
-        else if(rangeList.size() ==0) System.out.println("0 " + L);
-        else{
-            if(rangeList.get(0).start != 0) unpainted.add(0);
-            for (Range range : rangeList) {
-                unpainted.add(range.start);
-                unpainted.add(range.end);
+        if (rangeList.size() > 0 && rangeList.get(0).equals(new Range(0, L))) System.out.println("All painted");
+        else if (rangeList.size() == 0) System.out.println("0 " + L);
+        else {
+            ArrayList<Range> unpaintedRanges = new ArrayList<>();
+            unpaintedRanges.add(new Range(0, L));
+            ArrayList<Range> paintedRanges = rangeList;
+            while (!paintedRanges.isEmpty()) {
+                ArrayList<Range> tempUnpaintedRanges = new ArrayList<>();
+                for(int i = 0; i < unpaintedRanges.size(); i++){
+                    Range r = unpaintedRanges.get(i);
+                    Iterator<Range> paintedIt = paintedRanges.iterator();
+                    while (paintedIt.hasNext()) {
+                        Range painted = paintedIt.next();
+                        if (r.isCollide(painted)) {
+                            tempUnpaintedRanges.addAll(r.split(painted));
+                            paintedIt.remove();
+                            break;
+                        }
+                    }
+                }
+                unpaintedRanges = tempUnpaintedRanges;
             }
-            if(unpainted.get(unpainted.size()-1)!=L) unpainted.add(L);
-            for(int i = 0; i<unpainted.size();i+=2){
-                System.out.println(unpainted.get(i) + " " + unpainted.get(i+1));
+            Iterator<Range> unIt1 = unpaintedRanges.iterator();
+            Iterator<Range> unIt2;
+            while (unIt1.hasNext()) {
+                Range r1 = unIt1.next();
+                unIt2 = unIt1;
+                if (unIt2.hasNext()) {
+                    Range r2 = unIt2.next();
+                    if (r1.isCollide(r2)) {
+                        unpaintedRanges.set(unpaintedRanges.indexOf(r1), r1.merge(r2));
+                        unIt2.remove();
+                        unIt1 = unpaintedRanges.iterator();
+                    }
+                } else break;
+            }
+            for (Range r : unpaintedRanges) {
+                System.out.println(r);
             }
         }
-
     }
 }
 
@@ -66,6 +92,30 @@ class Range {
         return (r.start >= start && r.start <= end) || (r.end >= start && r.end <= end);
     }
 
+    public ArrayList<Range> split(Range splitter) {
+        ArrayList<Range> splittedArr = new ArrayList<>();
+        if (!isCollide(splitter)) {
+            splittedArr.add(this);
+            return splittedArr;
+        }
+        ArrayList<Integer> tempArr = new ArrayList<>();
+        tempArr.add(Math.min(start, splitter.start));
+        tempArr.add(Math.max(start, splitter.start));
+        tempArr.add(Math.min(end, splitter.end));
+        tempArr.add(Math.max(end, splitter.end));
+        tempArr = tempArr.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
+        for(int i = 0; i < tempArr.size() - 1; i++){
+            splittedArr.add(new Range(tempArr.get(i), tempArr.get(i + 1)));
+        }
+        return splittedArr;
+    }
+
+
+    @Override
+    public String toString() {
+        return start + " " + end;
+    }
+
     public Range merge(Range r) {
         return new Range(Math.min(start, r.start), Math.max(end, r.end));
     }
@@ -75,8 +125,7 @@ class Range {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Range range = (Range) o;
-        return start == range.start &&
-                end == range.end;
+        return start == range.start && end == range.end;
     }
 
     @Override

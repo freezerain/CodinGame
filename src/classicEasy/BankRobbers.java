@@ -1,6 +1,10 @@
-import java.util.*;
+package classicEasy;
 
-class Solution {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+//https://www.codingame.com/training/easy/bank-robbers
+public class BankRobbers {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
