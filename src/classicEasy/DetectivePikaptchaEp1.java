@@ -3,13 +3,12 @@ package classicEasy;
 import java.util.Scanner;
 
 //https://www.codingame.com/training/easy/detective-pikaptcha-ep1
-//TODO Solved, not optimized
 public class DetectivePikaptchaEp1 {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
-        int rows = in.nextInt();
         int cols = in.nextInt();
+        int rows = in.nextInt();
         int[][] mapArr = new int[rows][cols];
         for(int i = 0; i < rows; i++){
             String line = in.next();
@@ -19,10 +18,10 @@ public class DetectivePikaptchaEp1 {
         }
         in.close();
         StringBuilder sb = new StringBuilder();
-        int counter = 0;
         for(int row = 0; row < rows; row++){
             for(int col = 0; col < cols; col++){
                 if (mapArr[row][col] == 0) {
+                    int counter = 0;
                     if (row > 0 && mapArr[row - 1][col] != -1) counter++;
                     if (row < rows - 1 && mapArr[row + 1][col] != -1) counter++;
                     if (col > 0 && mapArr[row][col - 1] != -1) counter++;
