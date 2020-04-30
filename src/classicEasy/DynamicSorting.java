@@ -1,7 +1,9 @@
+package classicEasy;
+
 import java.util.*;
 import java.util.stream.Collectors;
-
-class Solution {
+//https://www.codingame.com/training/medium/dynamic-sorting
+public class DynamicSorting {
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         LinkedHashMap<String, Boolean> filterList = new LinkedHashMap<>();
