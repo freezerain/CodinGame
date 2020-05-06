@@ -1,18 +1,38 @@
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.*;
+import java.math.*;
 import java.util.stream.Stream;
+
 class Solution {
+
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
-        int start = in.nextInt();
         int N = in.nextInt();
-        LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
-        AtomicInteger i = new AtomicInteger();
-        Stream.iterate(start, n -> {
-            int e = i.get() - map.getOrDefault(n, i.get());
-            map.put(n, i.get());
-            i.getAndIncrement();
-            return e;
-        }).limit(N).skip(N - 1).findFirst().ifPresent(System.out::println);
+        if (in.hasNextLine()) {
+            in.nextLine();
+        }
+        Stream.iterate(in.nextLine(), n -> in.nextLine())
+                .limit(N)
+                .forEach(s -> System.out.println(s + appendFriendly(s)));
+    }
+
+    static String appendFriendly(String s) {
+        HashSet<String> history = new HashSet<>();
+        while (true) {
+            s = getSumOfSquares(s);
+            if (s.equals("1")) return " :)";
+            if (history.contains(s)) return " :(";
+            history.add(s);
+        }
+    }
+
+    static String getSumOfSquares(String s) {
+        BigInteger n = new BigInteger(s);
+        BigInteger sum = BigInteger.valueOf(0);
+        while (n.compareTo(BigInteger.valueOf(0)) > 0) {
+            sum = sum.add(n.remainder(BigInteger.valueOf(10)).multiply(n.remainder(BigInteger.valueOf(10))));
+            n = n.divide(BigInteger.valueOf(10));
+        }
+        return sum.toString();
     }
 }
