@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 class Player {
     public static final int MAX_SPEED = 100;
@@ -18,7 +19,7 @@ class Player {
         //cpManager.addNewCheckpoint(0,3500);
         //cpManager.addNewCheckpoint(-1500,-1500);
         // cpManager.addNewCheckpoint(1500, 0);
-        cpManager.updateCurrentTarget(new Point(0, 3500));
+        cpManager.updateCurrentTarget(new Point(-2000,0 ));
         //cpManager.updateCurrentTarget(new Point(-1500,-1500));
         //cpManager.updateCurrentTarget(new Point(1500,0));
 
@@ -30,7 +31,7 @@ class Player {
             startTime = System.nanoTime();
 
             //test(pods);
-            evolution(startTime,myPod);
+            evolution(startTime, myPod);
 
             System.err.println("Iteration time: " + (System.nanoTime() - startTime) / 1000000);
         }
@@ -40,35 +41,47 @@ class Player {
         Scanner in = new Scanner(System.in);
         long startTime;
         Pod myPod = new Pod(0, 0, 0);
+        Point previousCoordinates = new Point(Double.MIN_VALUE, Double.MIN_VALUE);
         // game loop
         while (true) {
             startTime = System.nanoTime();
             myPod.x = in.nextInt(); // x position of your pod
             myPod.y = in.nextInt(); // y position of your pod
+            if(previousCoordinates.equals(new Point(Double.MIN_VALUE, Double.MIN_VALUE))){
+                previousCoordinates.x = myPod.x;
+                previousCoordinates.y = myPod.y;
+            }else{
+                myPod.vx = (myPod.x - previousCoordinates.x) * 0.85 ;
+                myPod.vy = (myPod.y - previousCoordinates.y) * 0.85 ;
+                previousCoordinates.x = myPod.x;
+                previousCoordinates.y = myPod.y;
+            }
             Point currentCheckpoint = new Point(in.nextInt(), in.nextInt());
             int nextCheckpointDist = in.nextInt();
             int nextCheckpointAngle = in.nextInt();
             if (in.hasNextLine()) in.nextLine();
             if (in.hasNextLine()) in.nextLine();
-            /*if(cpManager.cPointArr.isEmpty()){
-                cpManager.addNewCheckpoint(myPod.x,myPod.y);
-                myPod.cpIndex++;
-            }*/
             cpManager.updateCurrentTarget(currentCheckpoint);
             myPod.cpIndex = cpManager.getTargetIndex(currentCheckpoint);
             myPod.setCurrentAngle(currentCheckpoint, nextCheckpointAngle);
-/*            if (!cpManager.isAllCheckPoints)
-                simpleMove((int) currentCheckpoint.x, (int) currentCheckpoint.y, nextCheckpointAngle, nextCheckpointDist);
-            else evolution(startTime, myPod);*/
 
-            if(haveBoost && Math.abs(nextCheckpointAngle)<10 && nextCheckpointDist>3000) {
-                print((int)currentCheckpoint.x, (int)currentCheckpoint.y, 300);
+
+            /*Pod cloned = new Pod(myPod);
+            //System.err.println("Cloned before boost x:" + cloned.x + " y: " +cloned.y+ " vX: " + cloned.vx + " vY: " + cloned.vy+" index: "+cloned.getCpIndex());
+            cloned.rotate(0);
+            cloned.boost(100);
+            //System.err.println("Cloned before sim x:" + cloned.x + " y: " +cloned.y+ " vX: " + cloned.vx + " vY: " + cloned.vy+" index: "+cloned.getCpIndex());
+            simulateTurn(new ArrayList<>(Arrays.asList(cloned)));
+            System.err.println("Input pod x: "+ myPod.x + " y: " + myPod.y + " vX: " + myPod.vx + " vY: " + myPod.vy+" index: " + myPod.getCpIndex());
+            System.err.println("Simulation x:" + cloned.x + " y: " +cloned.y+ " vX: " + cloned.vx + " vY: " + cloned.vy+" index: "+cloned.getCpIndex());
+            print((int)myPod.x-1000,(int)myPod.y, 100);
+*/
+            if (haveBoost && Math.abs(nextCheckpointAngle) < 10 && nextCheckpointDist > 3000) {
+                print((int) currentCheckpoint.x, (int) currentCheckpoint.y, 300);
                 haveBoost = false;
-            }else{
-                System.err.println("input angle " +nextCheckpointAngle);
+            } else {
+                System.err.println("input angle " + nextCheckpointAngle + " Pod Angle: " +myPod.angle);
                 evolution(startTime, myPod);
-                //myPod.printMove(new Move(myPod.diffAngle(currentCheckpoint), angleDiff > 60 ? 0 : 100));
-                //print((int)currentCheckpoint.x,(int)currentCheckpoint.y,angleDiff > 60 ? 0 : 100);
                 System.err.println("Iteration time: " + (System.nanoTime() - startTime) / 1000000);
             }
 
@@ -84,7 +97,7 @@ class Player {
     }
 
     public static void print(int x, int y, int thrust) {
-        System.out.println(x + " " + y + " " + (thrust > 200 ? "BOOST" : thrust < 0 ? 0 : thrust));
+        System.out.println(x + " " + y + " " + (thrust > 200 ? "BOOST BOOST!!!" : thrust < 0 ? 0 : thrust));
     }
 
     static void test(ArrayList<Pod> podArr) {
@@ -109,7 +122,9 @@ class Player {
                 for(int j = i + 1; j < podArr.size(); ++j){
                     Collision col = podArr.get(i).collision(podArr.get(j));
                     // If the collision occurs earlier than the one we currently have we keep it
-                    if (col != null && !collisionHistory.contains(col) && col.t + t < 1.0 && (firstCollision == null || col.t < firstCollision.t)) {
+                    if (col != null && !collisionHistory.contains(col) && col.t + t < 1.0 && (firstCollision == null
+                                                                                              || col.t
+                                                                                                 < firstCollision.t)) {
                         firstCollision = col;
                     }
                 }
@@ -119,7 +134,9 @@ class Player {
                 Collision col = podArr.get(i).collision(cpManager.cPointArr.get(podArr.get(i).getCpIndex()));
 
                 // If the collision happens earlier than the current one we keep it
-                if (col != null && !collisionHistory.contains(col) && col.t + t < 1.0 && (firstCollision == null || col.t < firstCollision.t)) {
+                if (col != null && !collisionHistory.contains(col) && col.t + t < 1.0 && (firstCollision == null
+                                                                                          || col.t
+                                                                                             < firstCollision.t)) {
                     firstCollision = col;
                 }
             }
@@ -153,55 +170,73 @@ class Player {
     static void evolution(long startTime, Pod myPod) {
         TreeSet<MySolution> solutionTree = getStartingSolutions(myPod);
         int amountOfEvolutions = 0;
-
+        double amplitude = 1.0;
+        int worstMutated =0;
+        int bestMutated =0;
         while (System.nanoTime() - startTime < 70000000) {
             amountOfEvolutions++;
-            MySolution solution = new MySolution(solutionTree.first());
-            solution.mutateMoves(1.0);
-            solution.score(myPod);
-            if (solution.score > solutionTree.first().score) {
+            double evolCoef = amountOfEvolutions / 20000.0;
+            amplitude = 1.1 - (evolCoef > 1.0? 1.0 : evolCoef);
+            MySolution solutionWorst = new MySolution(solutionTree.first());
+            //MySolution solutionBest = new MySolution(solutionTree.last());
+            solutionWorst.mutateMoves(amplitude);
+            //solutionBest.mutateMoves(1.0);
+            solutionWorst.score(myPod);
+            //solutionBest.score(myPod);
+            if (solutionWorst.score > solutionTree.first().score) {
                 solutionTree.pollFirst();
-                solutionTree.add(solution);
-            }
+                solutionTree.add(solutionWorst);
+                worstMutated++;
+            }/*if (solutionBest.score > solutionTree.first().score) {
+                solutionTree.pollFirst();
+                solutionTree.add(solutionBest);
+                bestMutated++;
+            }*/
         }
 
-        System.err.println("Amount of evolutions: " + amountOfEvolutions);
+        System.err.println("Evolutions: " + amountOfEvolutions+" Worst: "+worstMutated+" Best: "+bestMutated);
         MySolution best = solutionTree.last();
 
-/*
-        myPod.rotate(best.moves1.get(0).angle);
-        myPod.boost(best.moves1.get(0).thrust);
-        simulateTurn(new ArrayList<>(Arrays.asList(myPod)));
-*/
+        System.err.println("Before sim Diff: "+myPod.diffAngle(cpManager.cPointArr.get(myPod.getCpIndex())) + " Pod angle: " + myPod.angle);
+        System.err.println("Solutin: "+best.name);
 
-        System.err.println(best);
-        Pod copyPod = new Pod(myPod);
-        copyPod.rotate(best.moves1.get(0).angle);
-        copyPod.boost(best.moves1.get(0).thrust);
-        simulateTurn(new ArrayList<>(Arrays.asList(copyPod)));
-        myPod = copyPod;
+        //myPod.rotate(best.moves1.get(0).angle);
+        //myPod.boost(best.moves1.get(0).thrust);
+        //System.err.println("Cp index: "+myPod.getCpIndex());
+        //simulateTurn(new ArrayList<>(Arrays.asList(myPod)));
+        System.err.println("Move angle: "+best.moves1.get(0).angle + " Move thrust: " + best.moves1.get(0).thrust);
+        //System.err.println("After sim Diff: "+myPod.diffAngle(cpManager.cPointArr.get(myPod.getCpIndex())) + " Pod angle: " + myPod.angle);
+        System.err.println("Cp index: "+myPod.getCpIndex());
+        Pod cloned = new Pod(myPod);
+        cloned.rotate(best.moves1.get(0).angle);
+        cloned.boost(best.moves1.get(0).thrust);
+        simulateTurn(new ArrayList<>(Arrays.asList(cloned)));
+        System.err.println("Input pod x: "+ myPod.x + " y: " + myPod.y + " vX: " + myPod.vx + " vY: " + myPod.vy+" index: " + myPod.getCpIndex());
+        System.err.println("Simulation x:" + cloned.x + " y: " +cloned.y+ " vX: " + cloned.vx + " vY: " + cloned.vy+" index: "+cloned.getCpIndex());
 
         myPod.printMove(best.moves1.get(0));
     }
 
     static TreeSet<MySolution> getStartingSolutions(Pod ogPod) {
         TreeSet<MySolution> set = new TreeSet<>();
-        //while (set.size() < 5) {
-            Pod pod = new Pod(ogPod);
-            MySolution newSolution = new MySolution();
-            for(int j = 0; j < 6; j++){
-                Move move = new Move();
-                double angle =  pod.diffAngle(cpManager.cPointArr.get(pod.getCpIndex()));
-                move.angle = angle;
-                move.thrust = Math.abs(angle) > 60 ? 0 : 100;
-                pod.rotate(angle);
-                pod.boost(move.thrust);
-                ArrayList<Pod> tempArr = new ArrayList<>();
-                tempArr.add(pod);
-                simulateTurn(tempArr);
-                newSolution.moves1.add(move);
-            }
-            newSolution.score = pod.score();
+        Pod pod = new Pod(ogPod);
+        MySolution newSolution = new MySolution();
+        for(int j = 0; j < 6; j++){
+            Move move = new Move();
+            double angle = pod.diffAngle(cpManager.cPointArr.get(pod.getCpIndex()));
+            if(angle < -18.0) angle = -18.0;
+            if(angle > 18.0) angle = 18.0;
+            move.angle = angle;
+            move.thrust = Math.abs(angle) > 60 ? 0 : 100;
+            pod.rotate(angle);
+            pod.boost(move.thrust);
+            ArrayList<Pod> tempArr = new ArrayList<>();
+            tempArr.add(pod);
+            simulateTurn(tempArr);
+            newSolution.name = "Original";
+            newSolution.moves1.add(move);
+        }
+        newSolution.score(ogPod);
         set.add(newSolution);
         for(int i = 0; i < 5; i++){
             pod = new Pod(ogPod);
@@ -211,7 +246,6 @@ class Player {
             set.add(nextS);
         }
 
-        //  }
         return set;
     }
 
@@ -221,28 +255,22 @@ class MySolution implements Comparable {
     ArrayList<Move> moves1 = new ArrayList<>();
     ArrayList<Move> moves2;
     public double score = Double.MIN_VALUE;
-    public Point finalLocation = new Point(0,0);
-    public double finalAngle = 0;
+    public String name = "";
 
     public MySolution() {
     }
+
     public MySolution(MySolution s) {
-        s.moves1.forEach(m->this.moves1.add(new Move(m)));
-        this.finalLocation = new Point(s.finalLocation.x, s.finalLocation.y);
-        this.finalAngle = s.finalAngle;
+        s.moves1.forEach(m -> this.moves1.add(new Move(m)));
         this.moves2 = s.moves2;
         this.score = s.score;
-    }
-
-    @Override
-    public String toString() {
-        return "Solution: Final location: " + finalLocation.x + " " + finalLocation.y + " Final angle: "+(int)finalAngle;
     }
 
     void mutateMoves(double amplitude) {
         for(Move m: moves1){
             m.mutate(amplitude);
         }
+        name = "Mutated";
     }
 
     @Override
@@ -263,13 +291,11 @@ class MySolution implements Comparable {
         // Play out the turns
         ArrayList<Pod> tempArr = new ArrayList<>();
         tempArr.add(clonedPod);
-        for (Move m : moves1) {
+        for(Move m: moves1){
             clonedPod.rotate(m.angle);
             clonedPod.boost(m.thrust);
             Player.simulateTurn(tempArr);
         }
-        finalLocation = new Point(clonedPod.x, clonedPod.y);
-        finalAngle = clonedPod.angle;
         score = clonedPod.score();
         return score;
     }
@@ -286,7 +312,8 @@ class Move {
 
     public Move() {
     }
-    public Move(Move m){
+
+    public Move(Move m) {
         this.angle = m.angle;
         this.thrust = m.thrust;
     }
@@ -307,8 +334,11 @@ class Move {
         if (ramax > 18.0) {
             ramax = 18.0;
         }
+        if(ramin>=ramax){
 
-        angle = (new Random().nextDouble() * (ramax - ramin)) + ramin;
+            System.err.println("Angle: " + angle + " min: " + ramin + " max: " +ramax);
+        }
+        angle = ThreadLocalRandom.current().nextInt((int)ramin,(int)(ramax)+1);
 
         //Мутация щита отключена
         /*if (!this.shield && random(0, 100) < SHIELD_PROB) {
@@ -324,8 +354,7 @@ class Move {
         if (pmax > 0) {
             pmax = 100;
         }
-
-        this.thrust = new Random().nextInt(pmax - pmin) + pmin;
+        this.thrust = ThreadLocalRandom.current().nextInt(pmin,pmax+1);
 
         // this.shield = false;
         //}
@@ -352,7 +381,8 @@ class CheckpointManager {
     public Checkpoint getNextCheckpoint(int id) {
         return cPointArr.get((id + 1) % cPointArr.size());
     }
-    public int getTargetIndex(Point p){
+
+    public int getTargetIndex(Point p) {
         return cPointArr.indexOf(p);
     }
 
@@ -387,6 +417,8 @@ class Pod extends Unit {
 
     public Pod(Pod p) {
         super(p.x, p.y, p.id);
+        this.vx = p.vx;
+        this.vy = p.vy;
         this.angle = p.angle;
         this.shield = p.shield;
         this.timeout = p.timeout;
@@ -498,8 +530,8 @@ class Pod extends Unit {
     double score() {
         Checkpoint cp = Player.cpManager.cPointArr.get(getCpIndex());
         double distance = getDistanceSqrt(cp);
-        double v = Math.abs(diffAngle(cp)) * 50.0;
-        double v1 = checked * 50000.0;
+        double v = 0;//Player.cpManager.isAllCheckPoints ? Math.abs(diffAngle(Player.cpManager.getNextCheckpoint(getCpIndex()))) * 100.0 : 0;
+        double v1 = checked * 100000.0;
         double v2 = v1 - v - distance;
         return timeout == 0 ? Double.MIN_VALUE : v2;
     }
@@ -604,7 +636,7 @@ class Pod extends Unit {
 class Checkpoint extends Unit {
     public Checkpoint(double x, double y, int id) {
         super(x, y, id);
-        this.r = 550.0;
+        this.r = 150.0;
     }
 
     @Override
@@ -624,7 +656,7 @@ class Unit extends Point {
     public Unit(double x, double y, int id) {
         super(x, y);
         this.id = id;
-        this.r = 350.0;
+        this.r = 400.0;
     }
 
     //Возвращяет результат столкновения этого юнита с U
