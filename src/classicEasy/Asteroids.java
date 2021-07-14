@@ -1,8 +1,11 @@
-import java.util.*;
-import java.io.*;
-import java.math.*;
-//https://www.codingame.com/ide/puzzle/asteroids
-class Solution {
+package classicEasy;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class Asteroids {
     public static void main(String args[]) {
         //Recieve data
         Scanner in = new Scanner(System.in);
@@ -51,7 +54,7 @@ class Solution {
             //If asteroid out of bounds - ignore
             if (!(t3w >= 0 && t3h >= 0 && t3w < map.length && t3h < map[0].length)) continue;
             if (map[t3w][t3h] == 0) map[t3w][t3h] = a.name;
-            //Check asteroid collision with ASCII numeric value
+                //Check asteroid collision with ASCII numeric value
             else map[t3w][t3h] = (char) Math.min(a.name, map[t3w][t3h]);
         }
         for (int i = 0; i < map.length; i++)
