@@ -1,8 +1,10 @@
-import java.util.*;
-import java.io.*;
-import java.math.*;
+package classicEasy;
 
-class Solution {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+//https://www.codingame.com/ide/puzzle/prefix-code
+public class PrefixCode {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
