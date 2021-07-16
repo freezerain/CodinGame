@@ -1,6 +1,11 @@
-import java.util.*;
+package classicEasy;
 
-class Solution {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+//https://www.codingame.com/ide/puzzle/sudoku-validator
+public class SudokuValidator {
 
     public static void main(String args[]) {
         //Receive data 
@@ -27,6 +32,7 @@ class Solution {
         System.out.println(
                 checkIsValid(rowList) && checkIsValid(columnList) && checkIsValid(cellList));
     }
+
     //If any string will not contain 123456789 then sudoku is not valid
     static boolean checkIsValid(List<String> listToCheck) {
         for (String s: listToCheck)
