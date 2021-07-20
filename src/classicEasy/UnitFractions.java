@@ -1,9 +1,9 @@
-import java.util.*;
-import java.io.*;
-import java.math.*;
+package classicEasy;
 
-class Solution {
+import java.util.Scanner;
+//https://www.codingame.com/ide/puzzle/unit-fractions
 //All credits goes to @MericLuc 
+public class UnitFractions {
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         long n = in.nextInt();
