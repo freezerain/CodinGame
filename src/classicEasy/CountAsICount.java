@@ -1,6 +1,10 @@
-import java.util.*;
+package classicEasy;
 
-class Solution {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+//https://www.codingame.com/ide/puzzle/count-as-i-count
+public class CountAsICount {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
@@ -25,5 +29,4 @@ class Solution {
         }
         return counter;
     }
-
 }
