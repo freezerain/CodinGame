@@ -1,5 +1,8 @@
-import java.util.*;
-class Solution {
+package classicEasy;
+
+import java.util.Scanner;
+//https://www.codingame.com/training/easy/the-river-ii-
+public class TheRiverII {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
@@ -13,12 +16,12 @@ class Solution {
         }
         System.out.println(s);
     }
-    
+
     private static int riverSum(int n){
         String s = String.valueOf(n);
         int sum = n;
         for (char c : s.toCharArray()) {
-            sum += Character.getNumericValue(c); 
+            sum += Character.getNumericValue(c);
         }
         return sum;
     }
