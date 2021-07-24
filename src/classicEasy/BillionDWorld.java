@@ -1,5 +1,9 @@
-import java.util.*;
-class Solution {
+package classicEasy;
+
+import java.util.Scanner;
+
+//https://www.codingame.com/ide/puzzle/1000000000d-world
+public class BillionDWorld {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
@@ -19,7 +23,7 @@ class Solution {
                 v1[i]= String.valueOf(amount-amount2);
                 v2[j]= String.valueOf(amount2-amount);
                 amount-= amount2;
-                if(amount<=0) continue mainLoop; 
+                if(amount<=0) continue mainLoop;
             }
         }
         System.out.println(dotProd);
