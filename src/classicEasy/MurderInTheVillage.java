@@ -1,181 +1,106 @@
 package classicEasy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 //https://www.codingame.com/ide/puzzle/murder-in-the-village
-public class MurderInTheVillage { public static void main(String args[]) {
-    Scanner in = new Scanner(System.in);
-    int N = in.nextInt();
-    if (in.hasNextLine()) {
-        in.nextLine();
-    }
-    List<Villager> villagerList = new ArrayList<>();
-    ArrayList<VillagerPair> pairList = new ArrayList<>();
-    for (int i = 0; i < N; i++){
-        String s = in.nextLine();
-        villagerList.add(new Villager(s));
-
-        List<String> wordList = Arrays.asList(
-                s.replaceAll("[^a-zA-Z ]", "").split("\\s+"));
-        String nameA = wordList.get(0);
-        String location = wordList.get(5);
-        if (s.contains("alone")) {
-            pairList.add(new VillagerPair(location, nameA, ""));
-            continue;
-        }
-        ArrayList<String> friendList = new ArrayList<>();
-        for (int j = 6; j < wordList.size(); j++){
-            if (wordList.get(j).equals("with") || wordList.get(j).equals("and")) continue;
-            friendList.add(wordList.get(j));
-        }
-        for (String friendName: friendList){
-            pairList.add(new VillagerPair(location, nameA, friendName));
-        }
-    }
-
-    String answer = "It was me!";
-    mainLoop:
-    for (int i = 0; i < pairList.size(); i++){
-        VillagerPair p = pairList.get(i);
-        if (p.villagerB.equals("")) {
-            int counter = 0;
-            for (VillagerPair testingPair: pairList){
-                if (testingPair.villagerA.equals(p.villagerA)) continue;
-                if (testingPair.location.equals(p.location)) {
-                    counter++;
-                    if (counter > 1) {
-                        answer = p.villagerA + " did it!";
-                        break mainLoop;
-                    }
-                }
-            }
-            p.isTrue = true;
-            continue ; //?????
-        }
-
-        if (p.isTrue) continue;
-
-        for (int j = i; j < pairList.size(); j++){
-            VillagerPair testPair = pairList.get(j);
-            if (testPair.villagerA.equals(p.villagerA)) continue;
-            if (testPair.isTrue) continue;
-            if (p.comparePair(testPair)) {
-                p.isTrue = true;
-                testPair.isTrue = true;
-                continue mainLoop;
-            }
-        }
-        answer = p.villagerA + " did it!";
-        break;
-    }
-
-       /* for (VillagerPair p: pairList){
-            if (!(p.isTrue)) {
-                answer = p.villagerA + " did it!";
-                break;
-            }
-        }*/
-    System.out.println(answer);
-
-
-
-        /*    ListIterator<VillagerPair> iter = pairList.listIterator();
+public class MurderInTheVillage {
+    public static void main(String args[]) {
+        Scanner in = new Scanner(System.in);
+        int N = in.nextInt();
+        if (in.hasNextLine()) in.nextLine();
+        List<Villager> villagerList = new ArrayList<>();
+        List<Villager> suspectList = new ArrayList<>();
+        for (int i = 0; i < N; i++)
+            villagerList.add(new Villager(in.nextLine()));
         mainLoop:
-        while(iter.hasNext()){
-            VillagerPair pair = iter.next();
-            if(pair.villagerB.equals("")){
-                int counter = 0;
-                for (VillagerPair p : pairList) {
-                    if(p.villagerA.equals(pair.villagerA)) continue;
-                    if(p.location.equals(pair.location)) {
-                        counter++;
-                        if (counter>1){
-                            answer = pair.villagerA + " did it!";
-                            break mainLoop;
-                        }
-                    }
-                }
-                iter.remove();
-            }
-        }
-        iter = pairList.listIterator();
-        while(iter.hasNext()){
-            VillagerPair pair = iter.next();
-            
-            
-        }
-        System.out.println(answer);*/
-
-
-}
-    // String finalStatement = "It was me!";
-        /*mainLoop:
+        //loop villagers
         for (int i = 0; i < villagerList.size(); i++){
-            Villager currentVillager = villagerList.get(i);
-            if(currentVillager.statement.contains("alone")){
-                finalStatement = currentVillager.name + " did it!";
-                for (int j = 0; j < villagerList.size(); j++){
-                    if(j == i) continue ;
-                    int counterValidation = 0;
-                    Villager testVillager = villagerList.get(j);
-                    if(testVillager.location.equals(currentVillager.location)){
-                        counterValidation++;
-                        if(counterValidation>1){
-                            break mainLoop;
-                        }
-                    }
-                }
+            Villager potentialSus = villagerList.get(i);
+            //if villager was alone put him in suspect list
+            if (potentialSus.witnessSet.size() == 0) {
+                suspectList.add(potentialSus);
                 continue;
             }
-            for (int j = 0; j < villagerList.size(); j++){
-                if(j == i) continue;
-                Villager testVillager = villagerList.get(j);
-                if(testVillager.statement.contains(currentVillager.name)){
-                    continue mainLoop;
-                }
+            //Ask all villagers who he was with
+            for (String witnessName: potentialSus.witnessSet){
+                //Skip him self
+                if (witnessName.equals(potentialSus.name)) continue;
+                //find villager object by name
+                for (Villager witness: villagerList)
+                    if (witnessName.equals(witness.name))
+                        //ask witness 
+                        //if at least 1 witness will return true then alibi confirmed 
+                        if (potentialSus.confirmAlibi(witness)) {
+                            suspectList.remove(potentialSus);
+                            suspectList.remove(witness);
+                            continue mainLoop;
+                        }
             }
-            finalStatement = currentVillager.name + " did it!";;
-            break;
-        }*/
-    //System.out.println(finalStatement);
-}
-
-
-class VillagerPair {
-    String location;
-    String villagerA;
-    String villagerB;
-    boolean isTrue = false;
-
-    public VillagerPair(String location, String villagerA, String villagerB) {
-        this.location = location;
-        this.villagerA = villagerA;
-        this.villagerB = villagerB;
+            //if not witnesses can confirm alibi
+            suspectList.add(potentialSus);
+        }
+        String answer;
+        //If multiple suspects (loners or liars) filter out loners
+        if (suspectList.size() > 1) {
+            String name = "";
+            mainLoop:
+            //Loop loners in suspect
+            for (Villager sus: suspectList){
+                //if we find a liar - hes a killer
+                if (sus.witnessSet.size() > 0) {
+                    name = sus.name;
+                    break;
+                }
+                //Loop through all villagers
+                for (Villager witness: villagerList)
+                    //Skip suspects
+                    if (!suspectList.contains(witness))
+                        //If suspect was "alone" in same location as honest villagers
+                        //then suspect is a liar
+                        if (sus.location.equals(witness.location)) {
+                            name = sus.name;
+                            break mainLoop;
+                        }
+            }
+            answer = name + " did it!";
+        } else if (suspectList.size() == 1) answer = suspectList.get(0).name + " did it!";
+        else answer = "It was me!";
+        System.out.println(answer);
     }
 
-    public boolean compareLocation(String location) {
-        return location.equals(this.location);
-    }
+    private static class Villager {
+        String name;
+        String location;
+        Set<String> witnessSet = new HashSet<>();
 
-    public boolean comparePair(VillagerPair pair) {
-        if (villagerB.isEmpty()) return false;
-        return pair.location.equals(location) &&
-               (pair.villagerA.equals(villagerA) || pair.villagerB.equals(villagerA)) &&
-               (pair.villagerB.equals(villagerA) || pair.villagerB.equals(villagerB));
-    }
-}
+        public Villager(String statement) {
+            //Remove dot in the end of statement
+            statement = statement.replaceAll("\\.", "");
+            name = statement.substring(0, statement.indexOf(":"));
+            location = statement.substring(statement.indexOf("the") + 4,
+                                           statement.contains("alone") ?
+                                                   statement.indexOf("alone") - 2 :
+                                                   statement.indexOf("with") - 1);
+            if (statement.contains("with")) {
+                witnessSet = new HashSet<>(Arrays.asList(
+                        statement.substring(statement.indexOf("with") + 5).split(" and ")));
+                //Add this to witnesses for easier alibi confirmation
+                witnessSet.add(name);
+            }
+        }
 
-class Villager {
-    String name;
-    String location;
-    String statement;
-
-    public Villager(String statement) {
-        this.statement = statement;
-        List<String> wordList = Arrays.asList(statement.split(" "));
-        name = wordList.get(0).substring(0, wordList.get(0).length() - 1);
-        location = wordList.get(4).equals("the") ? wordList.get(5) : wordList.get(4);
+        public boolean confirmAlibi(Villager witness) {
+            //Location is wrong
+            if (!location.equals(witness.location)) return false;
+            //This villager is not in witness.nameSet
+            if (!witness.witnessSet.contains(name)) return false;
+            //witness.name is not in this.nameSet
+            if (!witnessSet.contains(witness.name)) return false;
+            // nameSets are different
+            // this test is obsolete
+            if (!(witnessSet.containsAll(witness.witnessSet)) &&
+                !(witness.witnessSet.containsAll(witnessSet))) return false;
+            return true;
+        }
     }
 }
