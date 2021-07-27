@@ -1,7 +1,10 @@
-import java.util.*;
+package classicEasy;
+
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-class Solution {
+//https://www.codingame.com/ide/puzzle/text-formatting
+public class TextFormatting {
 
     public static void main(String args[]) {
         String intext = new Scanner(System.in).nextLine();
