@@ -1,9 +1,8 @@
-import java.util.*;
-import java.io.*;
-import java.math.*;
+package classicEasy;
 
-
-class Solution {
+import java.util.Scanner;
+//https://www.codingame.com/ide/puzzle/pirates-treasure
+public class PiratesTreasure {
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         int W = in.nextInt();
