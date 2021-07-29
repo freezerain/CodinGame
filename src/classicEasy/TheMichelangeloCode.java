@@ -1,7 +1,9 @@
+package classicEasy;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
-class Solution {
+public class TheMichelangeloCode {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
@@ -59,7 +61,7 @@ class Solution {
                         String substring = text.substring((k+1) + (i * j), k + (i * (j+1)));
                         sb.append(c).append(substring);
                     }
-                    
+
                     sb.setLength(sb.length() - i + 1);
                     ans = sb.toString();
                     break mainLoop;
@@ -120,14 +122,14 @@ class Solution {
 
     private static String getWord(String text, String word, int period) {
         if (word.length() < 2) return word.toUpperCase();
-        if ((!text.contains(word.charAt(0) + "")) || (!text.contains(word.charAt(1) + "")) || period*word.length()>text.length()) 
+        if ((!text.contains(word.charAt(0) + "")) || (!text.contains(word.charAt(1) + "")) || period*word.length()>text.length())
             return "";
         if(period != 0){
             if(word.charAt(1) == text.charAt(period)){
                 String afterWord = getWord(text.substring(period), word.substring(1), period);
                 if(afterWord.isEmpty()) return "";
                 else return text.substring(0, 1).toUpperCase() + text.substring(1, period) +
-                       afterWord;
+                            afterWord;
             }else return "";
         }
         String answer = "";
@@ -135,13 +137,13 @@ class Solution {
         while (start >= 0) {
             int end = text.indexOf(word.charAt(1), start + 1);
             while (end >= 0) {
-                
-                    String result = getWord(text.substring(end), word.substring(1), end - start);
-                    if ((!result.isEmpty()) && result.length() + end - start > answer.length()) {
-                        String startString = text.substring(start, start + 1).toUpperCase();
-                        String endString = text.substring(start + 1, end);
-                        answer = startString + endString + result;
-                    }
+
+                String result = getWord(text.substring(end), word.substring(1), end - start);
+                if ((!result.isEmpty()) && result.length() + end - start > answer.length()) {
+                    String startString = text.substring(start, start + 1).toUpperCase();
+                    String endString = text.substring(start + 1, end);
+                    answer = startString + endString + result;
+                }
                 end = text.indexOf(word.charAt(1), end + 1);
             }
             start = text.indexOf(word.charAt(0), start + 1);
