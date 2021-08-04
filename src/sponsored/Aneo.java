@@ -1,6 +1,9 @@
-import java.util.*;
+package sponsored;
 
-class Solution {
+import java.util.Scanner;
+
+//https://www.codingame.com/open-challenge-apply/20475484
+public class Aneo {
 
     public static void main(String args[]) {
         //Receive data from console
