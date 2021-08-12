@@ -9,14 +9,10 @@ public class NumberDerivation {
     }
 
     private static int deriveRecursive(int n){
-        int a = 1;
         for (int i = 2; i <=n/2 ; i++)
             if(n%i==0) {
-                a = i;
-                break;
+                return (deriveRecursive(n / i) * i) + n / i;
             }
-        if(a == 1) return 1;
-        int b = n / a;
-        return (deriveRecursive(a) * b) + (a * deriveRecursive(b));
+        return 1;
     }
 }
