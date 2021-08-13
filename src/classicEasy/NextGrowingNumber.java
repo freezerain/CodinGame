@@ -1,7 +1,10 @@
-import java.util.*;
-import java.util.stream.IntStream;
+package classicEasy;
 
-class Solution {
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.stream.IntStream;
+//https://www.codingame.com/ide/puzzle/next-growing-number
+class NextGrowingNumber {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
