@@ -1,7 +1,10 @@
-import java.util.*;
-import java.util.stream.Collectors;
+package classicEasy;
 
-class Solution {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+//https://www.codingame.com/ide/puzzle/darts
+class Darts {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
