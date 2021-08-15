@@ -1,6 +1,7 @@
 package classicEasy;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 //https://www.codingame.com/ide/puzzle/darts
@@ -11,7 +12,7 @@ class Darts {
         int size = in.nextInt();
         int N = in.nextInt();
         if (in.hasNextLine()) in.nextLine();
-        Map<String, Integer> scoreMap = new HashMap<>();
+        Map<String, Integer> scoreMap = new LinkedHashMap<>();
         for (int i = 0; i < N; i++) scoreMap.put(in.nextLine(), 0);
         int T = in.nextInt();
         for (int i = 0; i < T; i++){

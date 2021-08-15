@@ -1,6 +1,9 @@
-import java.util.*;
+package classicEasy;
 
-class Solution {
+import java.util.Arrays;
+import java.util.Scanner;
+//https://www.codingame.com/ide/puzzle/extended-hamming-codes
+class ExtendedHammingCodes {
 
     public static void main(String args[]) {
         String bitString = new Scanner(System.in).nextLine();
