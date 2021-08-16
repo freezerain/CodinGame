@@ -1,7 +1,11 @@
-import java.util.*;
-import java.util.stream.Collectors;
+package classicEasy;
 
-class Solution {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+//https://www.codingame.com/ide/puzzle/reverse-fizzbuzz
+class ReverseFizzBuzz {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);

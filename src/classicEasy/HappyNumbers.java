@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.stream.Stream;
 //https://www.codingame.com/training/easy/happy-numbers
-//TODO Transfer BigInteger to full String solution
+//Transfer BigInteger to full String solution
 public class HappyNumbers {
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
