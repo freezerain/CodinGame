@@ -1,6 +1,8 @@
-import java.util.*;
+package classicEasy;
 
-class Solution {
+import java.util.*;
+//https://www.codingame.com/ide/puzzle/hunger-games
+class HungerGames {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
