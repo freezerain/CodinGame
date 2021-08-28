@@ -1,8 +1,7 @@
 package classicEasy;
 
 import java.util.Scanner;
-//https://www.codingame.com/ide/demo/893086f8ca8b575ab9e5b035ffc91e20a46c18
-//This puzzle still not published
+//https://www.codingame.com/ide/puzzle/someones-acting-sus----
 class SomeonesActingSus {
 
     public static void main(String args[]) {
